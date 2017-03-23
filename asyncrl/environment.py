@@ -107,10 +107,11 @@ class GymWrapper:
         accum_reward = 0
         for _ in range(self.actrep):
             s, r, term, info = self.env.step(action)
+            temp = self.preprocess(s)
             accum_reward += r
             if term:
                 break
-        return self.preprocess(s), accum_reward, term, info
+        return temp, accum_reward, term, info
 
     def render(self):
         """Renders current frame"""

@@ -13,7 +13,7 @@ from asyncrl.agent import QlearningAgent, AgentSummary
 import time
 import os
 
-random.seed(201)  # To reproduce minimum epsilon sampling
+random.seed(40)  # To reproduce minimum epsilon sampling
 # Distribution of epsilon exploration chances (0.1 = 0.4; 0.01 = 0.3; 05 = 0.3)
 EPS_MIN_SAMPLES = 4 * [0.1] + 3 * [0.01] + 3 * [0.5]
 
@@ -38,6 +38,7 @@ tf.app.flags.DEFINE_integer("height", 84, "Screen image height")
 tf.app.flags.DEFINE_integer("test_iter", 3, "Number of test iterations. Used for logging.")
 tf.app.flags.DEFINE_string("logdir", 'logs/', "Path to the directory used for checkpoints and loggings")
 tf.app.flags.DEFINE_integer("log_interval", 80000, "Log and checkpoint every X frame")
+tf.app.flags.DEFINE_integer("print_interval", 4000, "Print stuff about reward")
 # Evaluation
 tf.app.flags.DEFINE_boolean("eval", False, "Disables training, evaluates agent's performance")
 tf.app.flags.DEFINE_string("evaldir", 'eval/', "Path to the evaluation logging")
@@ -144,7 +145,9 @@ def train_async_dqn(agent, env, sess, agent_summary, saver, thread_idx=0):
     :type saver: tensorflow.train.Saver
     :type thread_idx: int"""
     global global_epsilons
-    eps_min = random.choice(EPS_MIN_SAMPLES)
+    bharath_epsilon = 8 * [0.1] +  5 * [0.01] + 3 * [0.5]
+    # eps_min = random.choice(EPS_MIN_SAMPLES)
+    eps_min = bharath_epsilon[thread_idx]
     epsilon = update_epsilon(agent.frame, FLAGS.eps_steps, eps_min)
     print('Thread: %d. Sampled min epsilon: %f' % (thread_idx, eps_min))
     last_logging = agent.frame
